@@ -91,27 +91,27 @@ Program macierz ma ze standardowego wejścia wczytywać dwie liczby k oraz n, ka
 1 2<br/>
 1 5<br/>
 12 4<br/>
-23 9
-3 11
-7 2
+23 9<br/>
+3 11<br/>
+7 2<br/>
 
 Takie dane wejściowe tworzą macierz od dwóch wierszach i trzech kolumnach:
 
-|  1  1 12 |
-| 23  3  7 |
+|  1  1 12 |<br/>
+| 23  3  7 |<br/>
 
 Program ma za zadanie wczytać tak sformatowane wejście (można zakładać, że podawane będą tylko poprawne dane), a następnie za pomocą puli wątków zawierającej 4 wątki policzyć sumy wierszy, przy czym pojedyncze zadanie obliczeniowe powinno podawać w wyniku wartość pojedynczej komórki macierzy, odczekawszy liczbę milisekund, które zostały wczytane jako potrzebne do obliczenia tej wartości (np. zadanie obliczeniowe wyliczenia wartości 3 z macierzy powyżej powinno odczekiwać 11 milisekund). Po obliczeniu należy wypisać sumy kolejnych wierszy na standardowe wyjście, po jednej sumie w wierszu. Dla przykładowej macierzy powyżej umieszczonej w pliku data1.dat wywołanie:
 
-$ cat data1.dat | ./macierz
+$ cat data1.dat | ./macierz<br/>
 powinno spowodować pojawienie się na wyjściu
 
-14
-33
+14<br/>
+33<br/>
 
 # Opis programu silnia
 Program silnia powinien wczytywać ze standardowego wejścia pojedynczą liczbę n, a następnie obliczać za pomocą puli 3 wątków liczbę n!. Po obliczeniu tej liczby wynik powinien zostać wypisany na standardowe wyjście. Program powinien wyliczać silnię, wykorzystując funkcję map i przekazując jej w future_value częściowe iloczyny. Dla przykładu wywołanie:
 
-$ echo 5 | ./silnia
+$ echo 5 | ./silnia <br/>
 powinno spowodować pojawienie się na wyjściu
 
 120
