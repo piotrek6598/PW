@@ -86,11 +86,11 @@ Dla ułatwienia implementacji można założyć, że zaimplementowana biblioteka
 
 Program macierz ma ze standardowego wejścia wczytywać dwie liczby k oraz n, każda w osobnym wierszu. Liczby te oznaczają odpowiednio liczbę wierszy oraz kolumn macierzy. Następnie program ma wczytać k*n linijek z danymi, z których każda zawiera dwie, oddzielone spacją liczby: v, t. Liczba v umieszczona w linijce i (numerację linijek zaczynamy od 0) określa wartość macierzy z wiersza floor(i/n) (numerację kolumn i wierszy zaczynamy od 0) oraz kolumny i mod n. Liczba t to liczba milisekund, jakie są potrzebne do obliczenia wartości v. Oto przykładowe poprawne dane wejściowe:
 
-2
-3
-1 2
-1 5
-12 4
+2<br/>
+3<br/>
+1 2<br/>
+1 5<br/>
+12 4<br/>
 23 9
 3 11
 7 2
