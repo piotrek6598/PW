@@ -17,8 +17,6 @@ static void *function(void *arg, size_t argsz __attribute__((unused)),
     *result = n * multiply_by;
     multiply_by++;
     mutex_unlock(&mutex);
-    sleep(3);
-    printf("Finished\n");
     return result;
 }
 
