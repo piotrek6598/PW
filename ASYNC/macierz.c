@@ -70,6 +70,10 @@ int main() {
     for (int i = 0; i < rows; i++){
         for (int j = 0; j < 2 * columns; j += 2){
             int *args = (int*)malloc(sizeof(int) * 3);
+            if (args == NULL){
+                thread_pool_destroy(&pool);
+                return -1;
+            }
             args[0] = matrix[i][j+1];
             args[1] = i;
             args[2] = matrix[i][j];
