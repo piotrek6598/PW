@@ -2,3 +2,4 @@
 
 ASYNC: Library in C providing threadpool and futures computing with some examples
 of use.
+Shamans: Concurrent implementation in C++ of discrete knapsack problem, mergeSort and best element selection.
