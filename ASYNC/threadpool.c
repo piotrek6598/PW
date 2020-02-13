@@ -1,3 +1,9 @@
+/** @file
+ * Implementation of threadpoll's interface.
+ *
+ * @author Piotr Jasinski <jasinskipiotr99@gmail.com>
+ */
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <signal.h>
