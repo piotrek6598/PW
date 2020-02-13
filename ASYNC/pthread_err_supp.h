@@ -9,6 +9,7 @@
 #define PTHREAD_ERR_SUPP_H
 
 #include <pthread.h>
+#include <signal.h>
 
 /** @brief mutex_lock Handles mutex locking errors.
  * @param mutex[in, out]   - pointer to mutex.
@@ -51,7 +52,8 @@ void condition_destroy(pthread_cond_t *cond);
  * @param act       - new signal handler;
  * @param old       - place to save previous signal handler.
  */
-void sigaction_create(int signum, const struct sigaction *act, struct sigaction *old);
+void sigaction_create(int signum, const struct sigaction *act,
+                      struct sigaction *old);
 
 /** @brief sigqueue_sig Handles sigqueue errors.
  * @param pid     - pid of process;
@@ -67,7 +69,7 @@ void sigqueue_sig(pid_t pid, int sig, const union sigval value);
  * @param start_routine     - pointer to thread's function;
  * @param arg[in, out]      - arguments of thread's function.
  */
-void thread_create(pthread_t *thread, const pthread_attr_t *attr,
+void thread_create(pthread_t *thread, pthread_attr_t *attr,
                    void *(*start_routine) (void *), void *arg);
 
 /** @brief thread_join Handles thread join errors.

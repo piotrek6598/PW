@@ -6,6 +6,7 @@
 
 #include "pthread_err_supp.h"
 #include "err.h"
+#include <signal.h>
 
 
 /** @brief mutex_lock Handles mutex locking errors.
@@ -77,7 +78,8 @@ void condition_destroy(pthread_cond_t *cond){
  * @param act       - new signal handler;
  * @param old       - place to save previous signal handler.
  */
-void sigaction_create(int signum, const sigaction *act, sigaction *old){
+void sigaction_create(int signum, const struct sigaction *act,
+                      struct sigaction *old){
   int err;
   if ((err = sigaction(signum, act, old)) != 0)
     syserr(err, "sigaction error");
@@ -88,7 +90,7 @@ void sigaction_create(int signum, const sigaction *act, sigaction *old){
  * @param sig     - signal's number;
  * @param value   - sigval value.
  */
-void sigqueue_sig(pid_t pid, int sig, const sigval value){
+void sigqueue_sig(pid_t pid, int sig, const union sigval value){
   int err;
   if ((err = sigqueue(pid, sig, value)) != 0)
     syserr(err, "sigqueue error");
@@ -101,7 +103,7 @@ void sigqueue_sig(pid_t pid, int sig, const sigval value){
  * @param start_routine     - pointer to thread's function;
  * @param arg[in, out]      - arguments of thread's function.
  */
-void thread_create(pthread_t *thread, const pthread_attr_t *attr,
+void thread_create(pthread_t *thread, pthread_attr_t *attr,
                    void *(*start_routine)(void *), void *arg){
   int err;
   if ((err = pthread_create(thread, attr, start_routine, arg)) != 0){
