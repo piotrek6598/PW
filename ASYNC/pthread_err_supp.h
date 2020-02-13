@@ -1,7 +1,11 @@
+/** @file
+ * Interface providing handling for basic pthread library functions' errors.
+ *
+ * @author Piotr Jasinski <jasinskipiotr99@gmail.com>
+ */
+
 #ifndef PTHREAD_ERR_SUPP_H
 #define PTHREAD_ERR_SUPP_H
-
-/// Provies errors' handling for basing pthread library funtions.
 
 #include <pthread.h>
 
