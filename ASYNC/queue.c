@@ -1,6 +1,12 @@
+/** @file
+ * Queue implementation based on linked list.
+ *
+ * @author Piotr Jasinski <jasinsksipiotr99@gmail.com>
+ */
+
 #include "queue.h"
 
-/** @brief make_queue Creates empty queue of tasks.
+/** @brief make_queue Creates empty queue.
  * @return Pointer to the queue or NULL if allocation problem occured.
  */
 queue_t* make_queue(){
@@ -33,7 +39,7 @@ int add_queue(queue_t *queue, void *value){
     return 0;
 }
 
-/** @brief pop_queue Removes task from front of queue.
+/** @brief pop_queue Removes object from front of queue.
  * @param queue[in, out]   - pointer to queue.
  * @return Pointer to element or NULL if queue is empty.
  */
@@ -50,6 +56,7 @@ void* pop_queue(queue_t *queue){
     free(tmp_node);
     return value;
 }
+
 /** @brief delete_queue Deletes queue.
  * @param queue[in]   - pointer to queue.
  */

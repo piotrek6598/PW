@@ -7,15 +7,21 @@
 #include <stdio.h>
 #include "future.h"
 
+/** @brief function_wrapper Provide wrapper for function that can be used
+ * in runnable_t.
+ */
 void function_wrapper(void*, size_t);
 
+/** @brief The callback struct is wrapper containing callable function, future
+ * to fullfill and threadpool which will perform calculus.
+ */
 typedef struct callback{
-    void *(*function)(void *, size_t, size_t *); /* Pointer to callable function */
-    void *function_arg;                          /* Pointer to arguments' of callable's function */
-    size_t function_argsz;                       /* Size of function's arguments */
+    void *(*function)(void *, size_t, size_t *); /* Pointer to callable function. */
+    void *function_arg;                          /* Pointer to arguments' of callable's function. */
+    size_t function_argsz;                       /* Size of function's arguments. */
     future_t *future;                            /* Future where the result will be stored. */
     thread_pool_t *pool;                         /* Threadpool which will execute the function.
-                                                    Initialized only in callback created by map */
+                                                    Initiated only in callback created by map. */
 } callback_t;
 
 /** @brief execute_map_call Defer single callback to threadpool.
@@ -27,6 +33,7 @@ void execute_map_call(callback_t *map_call){
     runnable.function = function_wrapper;
     runnable.arg = map_call;
     runnable.argsz = sizeof(map_call);
+
     if (defer(map_call->pool, runnable) != 0){
         fprintf(stderr, "can't defer map_call\n");
     }
@@ -44,10 +51,12 @@ void execute_map_calls (future_t *future){
     while (map_calls->front != NULL){
         tmp_node = map_calls->front;
         callback_t *callback = (callback_t*)tmp_node->value;
+
         // Setting future's result as function argument.
         callback->function_arg = future->value;
         callback->function_argsz = sizeof(future->value);
         map_calls->front = map_calls->front->next;
+
         execute_map_call(callback);
         free(tmp_node);
     }
@@ -59,21 +68,23 @@ void execute_map_calls (future_t *future){
  * @param args[in,out]   - pointer to callback.
  */
 void function_wrapper(void *args, size_t argsz __attribute__((unused))){
-    int err;
     callback_t *callback = (callback_t*)args;
     void *result;
 
     result = (*(callback->function))
             (callback->function_arg, callback->function_argsz, &callback->future->ret_size);
     mutex_lock(&callback->future->mutex);
+
     // Setting result and marking future as resolved.
     callback->future->value = result;
     callback->future->resolved = 1;
+
     // Notifying that result was calculated.
-    if ((err = pthread_cond_broadcast(&callback->future->result)) != 0)
-        syserr(err, "condition broadcast error");
+    condition_broadcast(&callback->future->result);
+
     // Execute map_calls.
     execute_map_calls(callback->future);
+
     mutex_unlock(&callback->future->mutex);
     free(args);
 }
@@ -98,25 +109,28 @@ int future_init(future_t *future){
         delete_queue(future->map_calls);
         return -1;
     }
+
     if (pthread_cond_init(&future->result, NULL) != 0){
         delete_queue(future->map_calls);
         pthread_mutex_destroy(&future->mutex);
         return -1;
     }
+
     future->initiated = 1;
     return 0;
 }
 
-/** @brief async Register task to calculate.
- * @param pool[in,out]     - pointer to threadpool designed to execute the task;
- * @param future[in,out]   - pointer to future which will store the result;
- * @param callable[in]     - task to be executed.
- * @return Value @p 0 in case of success, value @p -1 when future was initialized,
- * but task wasn't registered, value @p -2 when future wasn't initialized.
+/** @brief async Registers task to calculate.
+ * @param pool[in, out]     - pointer to threadpool designed to execute the task;
+ * @param future[in, out]   - pointer to future which will store the result;
+ * @param callable[in]      - task to be executed.
+ * @return Value @p 0 in case of success, value @p -1 when future was initiated,
+ * but task wasn't registered, value @p -2 when future wasn't initiated.
  */
 int async(thread_pool_t *pool, future_t *future, callable_t callable) {
     if (future_init(future) != 0)
         return -2;
+
     // Creating callback.
     callback_t *callback = (callback_t*)malloc(sizeof(callback_t));
     if (callback == NULL)
@@ -125,6 +139,7 @@ int async(thread_pool_t *pool, future_t *future, callable_t callable) {
     callback->function_arg = callable.arg;
     callback->function_argsz = callable.argsz;
     callback->future = future;
+
     runnable_t runnable;
     runnable.function = function_wrapper;
     runnable.arg = (void*)callback;
@@ -135,6 +150,7 @@ int async(thread_pool_t *pool, future_t *future, callable_t callable) {
         free(callback);
         return -1;
     }
+
     mutex_lock(&future->mutex);
     // Marking future that result is expected.
     if (future->resolved == -1)
@@ -144,27 +160,27 @@ int async(thread_pool_t *pool, future_t *future, callable_t callable) {
 }
 
 /** @brief map Register new task on result.
- * @param pool[in,out]       - pointer to threadpool designed to execute the task;
- * @param future[in,out]     - pointer to future which will store result of given task;
- * @param from[in,out]       - pointer to future storing result;
- * @param function[in,out]   - pointer to function on result.
- * @return Value @p 0 in case of succes, value @p -1 when future was initialized,
- * but task wasn't registered, value @p -2 when future wasn't initialized.
+ * @param pool[in, out]      - pointer to threadpool designed to execute the task;
+ * @param future[in, out]    - pointer to future which will store result of given task;
+ * @param from[in, out]      - pointer to future storing result;
+ * @param function[in, out]  - pointer to function on result.
+ * @return Value @p 0 in case of succes, value @p -1 when future was initiated,
+ * but task wasn't registered, value @p -2 when future wasn't initiated.
  */
 int map(thread_pool_t *pool, future_t *future, future_t *from,
         void *(*function)(void *, size_t, size_t *)) {
     // Initiating future.
     if (future_init(future) != 0)
         return -2;
+
     // Registering map call.
-    /*if (pool == NULL || pool->initiated == 0)
-        return -1;*/
     if (from == NULL)
         return -1;
     if (from->initiated == 0){
         if (future_init(from) != 0)
             return -1;
     }
+
     mutex_lock(&from->mutex);
     // Creating callback.
     callback_t *new_callback = (callback_t*)malloc(sizeof(callback_t));
@@ -173,6 +189,7 @@ int map(thread_pool_t *pool, future_t *future, future_t *from,
     new_callback->function = function;
     new_callback->future = future;
     new_callback->pool = pool;
+
     // If result is expected but not calculated, callback will be executed when
     // result comes out.
     if (from->resolved != 1){
@@ -196,6 +213,7 @@ int map(thread_pool_t *pool, future_t *future, future_t *from,
     runnable.function = function_wrapper;
     runnable.arg = (void*)new_callback;
     runnable.argsz = sizeof(new_callback);
+
     if (defer(pool, runnable) != 0){
         free(new_callback);
         return -1;

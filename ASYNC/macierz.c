@@ -1,3 +1,9 @@
+/** @file
+ * Example of use threadpool's defer.
+ *
+ * @author Piotr Jasinski <jasinskipiotr99@gmail.com>
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>

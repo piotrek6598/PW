@@ -1,3 +1,9 @@
+/** @file
+ * Example of use future computing.
+ *
+ * @author Piotr Jasinski <jasinskipiotr99@gmail.com>
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "future.h"

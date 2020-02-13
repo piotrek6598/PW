@@ -1,5 +1,5 @@
 /** @file
- * Implementation of threadpoll's interface.
+ * Implementation of threadpool's interface.
  *
  * @author Piotr Jasinski <jasinskipiotr99@gmail.com>
  */
@@ -32,7 +32,7 @@ void catch (int sig, siginfo_t *siginfo, void *more __attribute__((unused))){
         return;
     }
 
-    if (sig == SIGINT) {
+    if (sig == SIGINT){
         // Setting flag to terminate proccess after destroyinf threadpool.
         pool->exitflag = 1;
         // Force destroying threadpool.
@@ -59,7 +59,6 @@ runnable_t* get_work(thread_pool_t *pool){
  * @param data[in]   - pointer to args.
  */
 void *thread (void *data){
-    int err;
     thread_pool_t *pool = (thread_pool_t*)data;
     runnable_t task;
     runnable_t *task_pointer;
@@ -75,14 +74,11 @@ void *thread (void *data){
     value.sival_ptr = (void*)pool;
 
     // Providing handler for SIGRTMIN;
-    if ((err = sigaction(SIGRTMIN, &action, NULL)) != 0)
-        syserr(err, "sigacton error");
+    sigaction_create(SIGRTMIN ,&action, NULL);
     // Sending SIGRTMIN signal with information about threadpool.
-    if ((err = sigqueue(getpid(), SIGRTMIN, value)) != 0)
-        syserr(err, "sigqueue error");
+    sigqueue_sig(getpid(), SIGRTMIN, value);
     // Providing handler for SIGINT
-    if ((err = sigaction(SIGINT, &action, NULL)) != 0)
-        syserr(err, "sigaction error");
+    sigaction_create(SIGINT, &action, NULL);
 
     while(1){
         // Taking task if pool isn't shutting down.
@@ -125,7 +121,8 @@ void create_threads(thread_pool_t *pool, size_t num_thread){
     pthread_attr_destroy(&attr);
 }
 
-/** @brief thread_pool_init Initiating given pool argument as threadpool.
+/** @brief thread_pool_init Initiates given pool argument as threadpool.
+ * Behavior of initiating previously initiated pool is undefined.
  * @param pool[in, out]   - pointer to new threadpool;
  * @param num_threads     - maximal number of working threads in threadpool.
  * @return Value @p 0 if initating successed, otherwise returns @p -1.
@@ -162,6 +159,10 @@ int thread_pool_init(thread_pool_t *pool, size_t num_threads) {
 }
 
 /** @brief thread_pool_destroy Destroys given threadpool.
+ * All task registered before will be performed.
+ * In case of destroying threadpool with SIGINT process will be terminated.
+ * After destroying pool is marked as uninitiated.
+ * Do nothing on uninitiated thredpool.
  * @param pool[in]   - pointer to threadpool.
  */
 void thread_pool_destroy(thread_pool_t *pool) {
@@ -200,6 +201,7 @@ void thread_pool_destroy(thread_pool_t *pool) {
 }
 
 /** @brief defer Registers task to do.
+ * Task can be only registered in intiated not shoutdowning pool.
  * @param pool[in, out]   - pointer to threadpool
  * @param runnable[in]    - task to do.
  * @return Value @p 0 if task was registered, otherwise returns @p -1.
