@@ -1,3 +1,9 @@
+/** @file
+ * Implementation of handling for basic pthread functions' errors.
+ *
+ * @author Piotr Jasinski <jasinskipiotr99@gmail.com>
+ */
+
 #include "pthread_err_supp.h"
 #include "err.h"
 
