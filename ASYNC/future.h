@@ -1,3 +1,9 @@
+/** @file
+ * Future computing interface.
+ *
+ * @author Piotr Jasinski <jasinskipiotr99@gmail.com>
+ */
+
 #ifndef FUTURE_H
 #define FUTURE_H
 
