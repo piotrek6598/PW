@@ -1,3 +1,9 @@
+/** @file
+ * Implementation of futures computing interface.
+ *
+ * @author Piotr Jasinski <jasinskipiotr99@gmail.com>
+ */
+
 #include <stdio.h>
 #include "future.h"
 
