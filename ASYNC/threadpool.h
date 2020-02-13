@@ -46,7 +46,7 @@ typedef struct thread_pool {
 int thread_pool_init(thread_pool_t *pool, size_t pool_size);
 
 /** @brief thread_pool_destroy Destroys given threadpool.
- * All task registered before will be performed.
+ * All task already registered will be performed.
  * In case of destroying threadpool with SIGINT process will be terminated.
  * After destroying pool is marked as uninitiated.
  * Do nothing on uninitiated threadpool.

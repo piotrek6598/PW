@@ -33,7 +33,7 @@ void catch (int sig, siginfo_t *siginfo, void *more __attribute__((unused))){
     }
 
     if (sig == SIGINT){
-        // Setting flag to terminate proccess after destroyinf threadpool.
+        // Setting flag to terminate proccess after destroying threadpool.
         pool->exitflag = 1;
         // Force destroying threadpool.
         thread_pool_destroy(pool);
@@ -110,14 +110,9 @@ void *thread (void *data){
  * @param num_thread      - number of thread in given threadpool.
  */
 void create_threads(thread_pool_t *pool, size_t num_thread){
-    int err;
     pthread_attr_t attr;
     pthread_attr_init(&attr);
-    if ((err = pthread_create(&(pool->threads[num_thread]), &attr,
-                       thread, (void *)pool)) != 0){
-        pthread_attr_destroy(&attr);
-        syserr(err, "thread create error");
-    }
+    thread_create(&(pool->threads[num_thread]), &attr, thread, (void *)pool);
     pthread_attr_destroy(&attr);
 }
 
@@ -159,14 +154,13 @@ int thread_pool_init(thread_pool_t *pool, size_t num_threads) {
 }
 
 /** @brief thread_pool_destroy Destroys given threadpool.
- * All task registered before will be performed.
+ * All task already registered will be performed.
  * In case of destroying threadpool with SIGINT process will be terminated.
  * After destroying pool is marked as uninitiated.
  * Do nothing on uninitiated thredpool.
  * @param pool[in]   - pointer to threadpool.
  */
 void thread_pool_destroy(thread_pool_t *pool) {
-    int err;
     if (pool == NULL)
         return;
     if (pool->initiated == 0)
@@ -183,18 +177,15 @@ void thread_pool_destroy(thread_pool_t *pool) {
         condition_signal(&pool->work);
     mutex_unlock(&pool->mutex);
     for (size_t i = 0; i < pool->pool_size; i++)
-        if ((err = pthread_join(pool->threads[i], NULL)) != 0)
-            syserr(err, "thread join error");
+      thread_join(pool->threads[i], NULL);
     mutex_lock(&pool->mutex);
     // Setting pool as uninitiated
     pool->initiated = 0;
     mutex_unlock(&pool->mutex);
     free(pool->threads);
     delete_queue(pool->tasks);
-    if ((err = pthread_mutex_destroy(&(pool->mutex))) != 0)
-        syserr(err, "threadpool mutex destroy error");
-    if ((err = pthread_cond_destroy(&(pool->work))) != 0)
-        syserr(err, "threadpool condition destroy error");
+    mutex_destroy(&pool->mutex);
+    condition_destroy(&pool->work);
     // Terminating process if needed.
     if (pool->exitflag == 1)
         exit(130);

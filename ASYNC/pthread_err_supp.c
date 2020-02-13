@@ -26,6 +26,15 @@ void mutex_unlock(pthread_mutex_t *mutex){
     syserr(err, "mutex unlock error");
 }
 
+/** @brief mutex_destroy Handles mutex destroying errors.
+ * @param mutex[in]   - pointer to mutex.
+ */
+void mutex_destroy(pthread_mutex_t *mutex){
+  int err;
+  if ((err = pthread_mutex_destroy(mutex)) != 0)
+    syserr(err, "mutex destroy error");
+}
+
 /** @brief condition_wait Handles waiting on condition errors.
  * @param cond[in, out]    - pointer to condition;
  * @param mutex[in, out]   - pointer to mutex to be realeased.
@@ -54,6 +63,15 @@ void condition_broadcast(pthread_cond_t *cond){
     syserr(err, "condition broadcast error");
 }
 
+/** @brief condition_destroy Handles condition destroying errors.
+ * @param cond[in]   - pointer to condition.
+ */
+void condition_destroy(pthread_cond_t *cond){
+  int err;
+  if ((err = pthread_cond_destroy(cond)) != 0)
+    syserr(err, "condition destroy error");
+}
+
 /** @brief sigaction_create Handles sigaction creating errors.
  * @param signum    - signal's number;
  * @param act       - new signal handler;
@@ -74,4 +92,30 @@ void sigqueue_sig(pid_t pid, int sig, const sigval value){
   int err;
   if ((err = sigqueue(pid, sig, value)) != 0)
     syserr(err, "sigqueue error");
+}
+
+/** @brief thread_create Handles thread creation errors.
+ * In case of error, function destroy @param attr attribute.
+ * @param thread[in, out]   - pointer to thread's descriptor;
+ * @param attr[in, out]     - thread's attributes ;
+ * @param start_routine     - pointer to thread's function;
+ * @param arg[in, out]      - arguments of thread's function.
+ */
+void thread_create(pthread_t *thread, const pthread_attr_t *attr,
+                   void *(*start_routine)(void *), void *arg){
+  int err;
+  if ((err = pthread_create(thread, attr, start_routine, arg)) != 0){
+      pthread_attr_destroy(attr);
+      syserr(err, "thread create error");
+    }
+}
+
+/** @brief thread_join Handles thread join errors.
+ * @param thread[in]        - thread to be destroyed;
+ * @param retval[in, out]   - place to store thread's exit status,
+ */
+void thread_join(pthread_t thread, void **retval){
+  int err;
+  if ((err = pthread_join(thread, retval)) != 0)
+    syserr(err, "thread join error");
 }
