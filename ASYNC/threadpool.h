@@ -1,3 +1,9 @@
+/** @file
+ * Threadpool's interface.
+ *
+ * @author Piotr Jasinski <jasinskipiotr99@gmail.com>
+ */
+
 #ifndef THREADPOOL_H
 #define THREADPOOL_H
 
