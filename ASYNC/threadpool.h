@@ -1,6 +1,6 @@
 /** @file
  * Threadpool's interface.
- * In case of receiving SIGINT threadpool finish all defered tasks
+ * In case of receiving SIGINT threadpool finishes all deferred tasks
  * and terminates process.
  *
  * @author Piotr Jasinski <jasinskipiotr99@gmail.com>
@@ -34,14 +34,14 @@ typedef struct thread_pool {
     pthread_mutex_t mutex;         /* Mutex for exclusive access to variables. */
     pthread_cond_t work;           /* Signaled when there is work to do. */
     queue_t *tasks;                /* Queue of tasks to be done. */
-    int shutdown;                  /* Flag indicates if threadpool is shuttig down. */
+    int shutdown;                  /* Flag indicates if threadpool is shutting down. */
 } thread_pool_t;
 
 /** @brief thread_pool_init Initiates given pool argument as threadpool.
  * Behavior of initiating previously initiated pool is undefined.
  * @param pool[in, out]   - pointer to new threadpool;
  * @param num_threads     - maximal number of working threads in threadpool.
- * @return Value @p 0 if initating successed, otherwise returns @p -1.
+ * @return Value @p 0 if initiating successed, otherwise returns @p -1.
  */
 int thread_pool_init(thread_pool_t *pool, size_t pool_size);
 
@@ -55,7 +55,7 @@ int thread_pool_init(thread_pool_t *pool, size_t pool_size);
 void thread_pool_destroy(thread_pool_t *pool);
 
 /** @brief defer Registers task to do.
- * Task can be only registered in intiated not shoutdowning pool.
+ * Task can be only registered in initiated not shutdowning pool.
  * @param pool[in, out]   - pointer to threadpool
  * @param runnable[in]    - task to do.
  * @return Value @p 0 if task was registered, otherwise returns @p -1.
