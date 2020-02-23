@@ -41,7 +41,7 @@ typedef struct thread_pool {
  * Behavior of initiating previously initiated pool is undefined.
  * @param pool[in, out]   - pointer to new threadpool;
  * @param num_threads     - maximal number of working threads in threadpool.
- * @return Value @p 0 if initiating successed, otherwise returns @p -1.
+ * @return Value @p 0 if initiating succeed, otherwise returns @p -1.
  */
 int thread_pool_init(thread_pool_t *pool, size_t pool_size);
 

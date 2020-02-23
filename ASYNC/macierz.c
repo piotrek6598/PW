@@ -52,7 +52,7 @@ int main() {
         }
     }
 
-    // Alocating memory for result.
+    // Allocating memory for result.
     buffer = (int*)malloc(sizeof(int) * rows);
     locks = (pthread_mutex_t*)malloc(sizeof(pthread_mutex_t) * rows);
     if (buffer == NULL || locks == NULL){
@@ -72,7 +72,7 @@ int main() {
         fprintf(stderr, "Thread pool initializing error\n");
         return -1;
     }
-    // Defering work
+    // Deferring work
     for (int i = 0; i < rows; i++){
         for (int j = 0; j < 2 * columns; j += 2){
             int *args = (int*)malloc(sizeof(int) * 3);

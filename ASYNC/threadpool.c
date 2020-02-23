@@ -14,7 +14,7 @@
 
 /** @brief catch Handles SIGINT and SIGRTMIN.
  * Handler is used by threads working in active threadpool.
- * Assumens that first SIGRTMIN signal provides information
+ * Assumes that first SIGRTMIN signal provides information
  * about thread's threadpool and save it.
  * In case of SIGINT, pool is destroyed and process using threadpool
  * is terminated after destroying was finished.
@@ -33,7 +33,7 @@ void catch (int sig, siginfo_t *siginfo, void *more __attribute__((unused))){
     }
 
     if (sig == SIGINT){
-        // Setting flag to terminate proccess after destroying threadpool.
+        // Setting flag to terminate process after destroying threadpool.
         pool->exitflag = 1;
         // Force destroying threadpool.
         thread_pool_destroy(pool);
@@ -53,7 +53,7 @@ runnable_t* get_work(thread_pool_t *pool){
     return task;
 }
 
-/** @brief thread Function containg thread code using to create thread.
+/** @brief thread Function containing thread code using to create thread.
  * As argument pointer to threadpool is expected.
  * New thread will be part of given threadpool.
  * @param data[in]   - pointer to args.
@@ -120,10 +120,10 @@ void create_threads(thread_pool_t *pool, size_t num_thread){
  * Behavior of initiating previously initiated pool is undefined.
  * @param pool[in, out]   - pointer to new threadpool;
  * @param num_threads     - maximal number of working threads in threadpool.
- * @return Value @p 0 if initating successed, otherwise returns @p -1.
+ * @return Value @p 0 if initiating succeed, otherwise returns @p -1.
  */
 int thread_pool_init(thread_pool_t *pool, size_t num_threads) {
-    // Initiating pool variables and alocating memory for arrays.
+    // Initiating pool variables and allocating memory for arrays.
     if (pool == NULL)
         return -1;
     pool->initiated = 0;
@@ -192,7 +192,7 @@ void thread_pool_destroy(thread_pool_t *pool) {
 }
 
 /** @brief defer Registers task to do.
- * Task can be only registered in intiated not shoutdowning pool.
+ * Task can be only registered in initiated not shutdowning pool.
  * @param pool[in, out]   - pointer to threadpool
  * @param runnable[in]    - task to do.
  * @return Value @p 0 if task was registered, otherwise returns @p -1.

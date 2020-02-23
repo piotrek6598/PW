@@ -18,7 +18,7 @@ typedef struct callable {
   size_t argsz;                                /* Size of arguments. */
 } callable_t;
 
-/** @brief The future struct is object containg future result.
+/** @brief The future struct is object containing future result.
   */
 typedef struct future {
     void *value;              /* Pointer to result. */

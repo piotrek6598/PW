@@ -28,7 +28,7 @@ void mutex_destroy(pthread_mutex_t *mutex);
 
 /** @brief condition_wait Handles waiting on condition errors.
  * @param cond[in, out]    - pointer to condition;
- * @param mutex[in, out]   - pointer to mutex to be realeased.
+ * @param mutex[in, out]   - pointer to mutex to be released.
  */
 void condition_wait(pthread_cond_t *cond, pthread_mutex_t *mutex);
 

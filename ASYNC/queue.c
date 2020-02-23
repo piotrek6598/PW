@@ -7,7 +7,7 @@
 #include "queue.h"
 
 /** @brief make_queue Creates empty queue.
- * @return Pointer to the queue or NULL if allocation problem occured.
+ * @return Pointer to the queue or NULL if allocation problem occurred.
  */
 queue_t* make_queue(){
     queue_t *new_queue = (queue_t*)malloc(sizeof(queue_t));

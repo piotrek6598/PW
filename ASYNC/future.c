@@ -63,7 +63,7 @@ void execute_map_calls (future_t *future){
 }
 
 /** @brief function_wrapper Provide wrapper for function that can be used in runnable_t.
- * Function executs given function, save result and execute map calls.
+ * Function executes given function, save result and execute map calls.
  * Works only if args is pointer to callback.
  * @param args[in,out]   - pointer to callback.
  */
@@ -91,7 +91,7 @@ void function_wrapper(void *args, size_t argsz __attribute__((unused))){
 
 /** @brief future_init Initiating given future.
  * @param future[in, out]   - pointer to future.
- * @return Value @p 0 if initiaing successed, otherwise value @p -1.
+ * @return Value @p 0 if initiating succeed, otherwise value @p -1.
  */
 int future_init(future_t *future){
     if (future == NULL)
